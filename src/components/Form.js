@@ -1,23 +1,76 @@
 import { Button, Grid, Paper, TextField, Typography } from '@mui/material'
 import Pin from '@mui/icons-material/PushPinRounded';
 import React, { useEffect, useState } from 'react';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
 
-import MyFormControlLabel from '@mui/material/FormControlLabel';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function () {
+  const [open, setOpen] = React.useState(false);
+  const [open1, setOpen1] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const handleOpen1 = () => setOpen1(true);
+  const handleClose1 = () => setOpen1(false);
   const [currentCity, setCurrentCity] = useState(null);
-  const [pick,setPick]=useState();
-  const [drop,setDrop]=useState();
-  const [sc,setSc]=useState();
-  //const [info,setInfo]=useState([false,false,false,false]);
-  const [infoc,setInfoc]=useState([0,0,0,0]);
-  const [add,setAdd]=useState();
+  const [time, setTime] = useState();
+  const [pick, setPick] = useState();
+  const [pe, setPe] = useState();
+  const [drop, setDrop] = useState();
+  const [de, setDe] = useState();
+  const [sc, setSc] = useState();
+  const [se, setSe] = useState();
+  const [infoc, setInfoc] = useState([0, 0, 0, 0]);
+  const [add, setAdd] = useState();
 
-  const submit=()=>
-  {
-
+  const submit = () => {
+    if (!pick) {
+      setPe('*Enter pickup location')
+    }
+    else {
+      setPe('')
+    }
+    if (!drop) {
+      setDe('*Enter drop location')
+    }
+    else {
+      setDe('')
+    }
+    if (!sc) {
+      setSe('*Select the time for ')
+    }
+    else {
+      setSe('')
+    }
+    console.log(pe, de, se);
+    if (pe == '' && se == '' && de == '') {
+      if (sc == 'later')
+      {
+        handleOpen();
+      }
+      else
+      {
+        console.log('hii');
+        handleOpen1();
+      }
+      setPick('')
+      setDrop('')
+      setInfoc('')
+      setAdd('')
+      setSc('')
+    }
   }
 
   const getloc = () => {
@@ -40,76 +93,78 @@ export default function () {
       })
   }
   //getloc();
-  const handlepick=(e)=>{
+  const handlepick = (e) => {
     setPick(e.target.value);
     console.log(pick);
   }
-  const handledrop=(e)=>{
+  const handledrop = (e) => {
     setDrop(e.target.value);
     console.log(drop);
   }
-  const book=(e)=>{
+  const book = (e) => {
     setSc(e.target.value);
     console.log(sc);
   }
-  const handlei=(e)=>{
-    let x=e.target.value
-    
-    if(x=='baby')
-    {
-      if(infoc[0]==0)
-      {
-        infoc[0]=1;
+  const handlei = (e) => {
+    let x = e.target.value
+
+    if (x == 'baby') {
+      if (infoc[0] == 0) {
+        infoc[0] = 1;
       }
-      else
-      {
-        infoc[0]=0;
+      else {
+        infoc[0] = 0;
       }
     }
-    else if(x=='carrier')
-    {
-      if(infoc[1]==0)
-      {
-        infoc[1]=1;
+    else if (x == 'carrier') {
+      if (infoc[1] == 0) {
+        infoc[1] = 1;
       }
-      else
-      {
-        infoc[1]=0;
+      else {
+        infoc[1] = 0;
       }
     }
-    else if(x=='chair')
-    {
-      if(infoc[2]==0)
-      {
-        infoc[2]=1;
+    else if (x == 'chair') {
+      if (infoc[2] == 0) {
+        infoc[2] = 1;
       }
-      else
-      {
-        infoc[2]=0;
+      else {
+        infoc[2] = 0;
       }
     }
-    else if(x=='trunk')
-    {
-      if(infoc[3]==0)
-      {
-        infoc[3]=1;
+    else if (x == 'trunk') {
+      if (infoc[3] == 0) {
+        infoc[3] = 1;
       }
-      else
-      {
-        infoc[3]=0;
+      else {
+        infoc[3] = 0;
       }
     }
-    for(let i=0;i<4;i++)
-    {
+    for (let i = 0; i < 4; i++) {
       console.log(infoc[i]);
     }
 
     console.log(e.target.value);
   }
-  const handleadd=(e)=>{
+  const handleadd = (e) => {
     setAdd(e.target.value)
     console.log((add));
   }
+  const handleSubmit = (event) => {
+    //event.preventDefault();
+    const { t } = event.target.elements;
+    setTime(t.value);
+    console.log(t.value);
+    handleOpen1();
+  };
+  const additional=()=>{
+    return(
+      <>
+      {}
+      </>
+    )
+  }
+
   return (
     <>
 
@@ -121,8 +176,11 @@ export default function () {
               <Grid item md={12} >
                 <Typography variant='h4'>Book A Ride</Typography>
               </Grid>
-              <Grid item md={12}>
+              <Grid item md={0.7}>
                 <Pin sx={{ width: '30px', height: '60px' }} />
+              </Grid>
+              <Grid item md={11.3}>
+
                 <TextField
                   id="outlined-multiline-flexible"
                   label="Pickup Location"
@@ -131,6 +189,7 @@ export default function () {
                   value={pick}
                   onChange={handlepick}
                 />
+                <div className='error'>{pe}</div>
               </Grid>
               <Grid item md={0.7}></Grid>
               <Grid item md={11.3}>
@@ -143,33 +202,38 @@ export default function () {
                   value={drop}
                   onChange={handledrop}
                 />
+                <div className='error'>{de}</div>
               </Grid>
               <Grid item md={1}></Grid>
               <Grid item md={5} sx={{ backgroundColor: '#ff9800d6', borderRadius: '40px', paddingBottom: '24px', marginTop: '10px' }}>
-                <input type="radio" id="html" name="fav_language" value="now" onClick={book}/>
+                <input type="radio" id="html" name="fav_language" value="now" onClick={book} />
                 <label for="html"><Typography variant='h5'>Now</Typography></label>
               </Grid>
               <Grid md={0.5}></Grid>
               <Grid item md={5} sx={{ backgroundColor: '#ff9800d6', borderRadius: '40px', paddingBottom: '24px', marginTop: '10px' }}>
-                <input type="radio" id="css" name="fav_language" value="later" onClick={book}/>
+                <input type="radio" id="css" name="fav_language" value="later" onClick={book} />
                 <label for="css"><Typography variant='h5'>Schedule Later</Typography></label>
               </Grid>
               <Grid md={0.5}></Grid>
+              <Grid md={0.7}></Grid>
+              <Grid item md={11.3}>
+                <div className='error'>{se}</div>
+              </Grid>
               <hr></hr>
               <Grid item md={0.8}></Grid>
               <Grid item md={5}>
-                <input type='checkbox' value='baby' onClick={handlei}/>Baby Seat
+                <input type='checkbox' value='baby' onClick={handlei} />Baby Seat
               </Grid>
               <Grid item md={5}>
-                <input type='checkbox' value='carrier' onClick={handlei}/>Carrier
+                <input type='checkbox' value='carrier' onClick={handlei} />Carrier
               </Grid>
               <Grid item md={1.2}></Grid>
               <Grid item md={0.8}></Grid>
               <Grid item md={5}>
-                <input type='checkbox' value='chair' onClick={handlei}/>Wheel Chair
+                <input type='checkbox' value='chair' onClick={handlei} />Wheel Chair
               </Grid>
               <Grid item md={5}>
-                <input type='checkbox' value='trunk' onClick={handlei}/>Trunk
+                <input type='checkbox' value='trunk' onClick={handlei} />Trunk
               </Grid>
               <Grid item md={1.2}></Grid>
               <hr></hr>
@@ -199,7 +263,58 @@ export default function () {
         <Grid item md={4}></Grid>
 
       </Grid>
-
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Date and Time selection
+          </Typography>
+          <hr></hr>
+          <Grid container>
+            <Grid item md={12}>
+              <form onSubmit={handleSubmit}>
+                <input type="datetime-local" id="birthdaytime" name="birthdaytime" />
+                <input type="submit"></input>
+              </form>
+            </Grid>
+            <Grid item md={12}></Grid>
+          </Grid>
+        </Box>
+      </Modal>
+      <Modal
+        open={open1}
+        onClose={handleClose1}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Booking done
+          </Typography>
+          <hr></hr>
+          <Grid container>
+            <Grid item md={12}>
+              Details:
+            </Grid>
+            <Grid item md={6}>
+              Pickup:{pick}
+            </Grid>
+            <Grid item md={6}>
+              Drop:{drop}
+            </Grid>
+            <Grid item md={6}>
+              Addition features required:{additional}
+            </Grid>
+            <Grid item md={6}>
+              Additional info:{add}
+            </Grid>
+          </Grid>
+        </Box>
+      </Modal>
     </>
   )
 }
